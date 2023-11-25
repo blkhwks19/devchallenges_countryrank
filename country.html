@@ -1,0 +1,269 @@
+<!doctype html>
+<html>
+<head>
+    <title>Document</title>
+    <style>
+      :root {
+        --xdark:#1B1D1F;
+        --dark:#282B30;
+        --med:#6C727F;
+        --light:#D2D5DA;
+        --blue:#4E80EE;
+      }
+      @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700&display=swap');
+
+      body {
+        margin:0;
+        display: flex;
+        justify-content: center;
+        font-family: 'Be Vietnam Pro', sans-serif;
+        background-color:var(--xdark);
+        background-image:url('./images/hero-image-wr.jpg');
+        background-repeat: no-repeat;
+        background-size: contain;
+        position: relative;
+        color:var(--light);
+      }
+      html, body {
+        height:100%;
+      }
+      .logo {
+        position: absolute;
+        top:20%;
+        left:43%;
+        width:220px;
+      }
+
+      .card {
+        background:var(--xdark);
+        border-radius:10px;
+        padding:30px 0;
+        width:55%;
+        border:1px solid var(--dark);
+        position: absolute;
+        top:40%;
+      }
+
+      .card > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap:50px;
+        margin-top:-80px;
+      }
+
+      .flag {
+        border-radius:10px;
+        border:1px solid var(--dark);
+      }
+      .card > div > .name {
+        text-align: center;
+      }
+      .common {
+        font-size: 32px;
+        font-weight: 600;
+      }
+      .full {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .stats {
+        display: flex;
+        align-items: center;
+        gap:40px;
+      }
+      .stat {
+        background:var(--dark);
+        border-radius:10px;
+        padding:10px 20px;
+        display: flex;
+        align-items: center;
+        gap:20px;
+      }
+      .stat .label {
+        font-size: 14px;
+      }
+      .stat .separator {
+        border-left:1px solid var(--xdark);
+        width:1px;
+        height:30px;
+      }
+      .stat .value {
+        font-weight: 600;
+      }
+
+      .details {
+        width:100%;
+      }
+      .detail {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom:1px solid var(--dark);
+        padding:20px 20px;
+      }
+      .detail:first-child {
+        border-top:1px solid var(--dark);
+      }
+      .detail .label {
+        font-size: 14px;
+        color:var(--med);
+        font-weight: 600;
+      }
+      .detail .value {
+        font-size: 14px;
+        color:var(--light);
+      }
+
+      .borders {
+        width: 95%;
+        margin-top:-20px;
+      }
+      .borders .label {
+        font-size: 14px;
+        color:var(--med);
+        margin-bottom:10px;
+      }
+      .borders .name {
+        font-size: 12px;
+        color:var(--light);
+        font-weight: 700;
+      }
+      .borders a {
+        text-decoration: none;
+      }
+      .borders .countries {
+        display: flex;
+        gap:20px;
+        flex-wrap: wrap;
+      }
+      .borders .country img {
+        width:80px;
+        height:50px;
+        border-radius:3px;
+      }
+      .borders .country .name {
+        margin-top:5px;
+      }
+    </style>
+    <script>
+      let id;
+      let country;
+
+      window.onload = function() {
+
+        id = new URLSearchParams(window.location.search).get('id');
+
+        fetch(`https://restcountries.com/v3.1/alpha/${id}`)
+          .then(response => response.json())
+          .then(data => {
+            country = data[0];
+
+            let codes = country.borders.join(',');
+            fetch(`https://restcountries.com/v3.1/alpha?codes=${codes}`)
+              .then(response => response.json())
+              .then(data => {
+                data.forEach(border => {
+                  document.querySelector('.countries').innerHTML += `<div class="country">
+                    <a href="country.html?id=${border.cca3}">
+                      <img src="${border.flags.png}">
+                      <div class="name">${border.name.common}</div>
+                    </a>
+                  </div>`;
+                })
+              });
+            ;
+
+            document.querySelector('.flag').setAttribute('src', country.flags.png);
+            document.querySelector('.name .common').innerHTML = country.name.common;
+            document.querySelector('.name .full').innerHTML = country.name.official;
+            document.querySelector('.stats .stat:nth-child(1) .value').innerHTML = country.population.toLocaleString();
+            document.querySelector('.stats .stat:nth-child(2) .value').innerHTML = country.area.toLocaleString();
+            document.querySelector('.details .detail:nth-child(1) .value').innerHTML = country.capital.join(', ');
+            document.querySelector('.details .detail:nth-child(2) .value').innerHTML = country.subregion;
+            document.querySelector('.details .detail:nth-child(3) .value').innerHTML = convertObject(country.languages).join(', ');
+            document.querySelector('.details .detail:nth-child(4) .value').innerHTML = convertObject(country.currencies).join(', ');
+            document.querySelector('.details .detail:nth-child(5) .value').innerHTML = country.continents.join(', ');
+          })
+          .catch(error => {
+            console.log(error)
+          })
+        ;
+
+      }
+
+      function convertObject(obj) {
+        var arr = [];
+        for (const objProp in obj) {
+          var val = obj[objProp];
+          if (typeof val === 'object') {
+            arr.push(val.name);
+          } else {
+            arr.push(val);
+          }
+        }
+        return arr;
+      }
+    </script>
+</head>
+<body>
+
+  <img src="./images/Logo.svg" class="logo">
+
+  <div class="card">
+    
+    <div>
+      <img class="flag" src="">
+
+      <div class="name">
+        <div class="common"></div>
+        <div class="full"></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Population</div>
+          <div class="separator"></div>
+          <div class="value"></div>
+        </div>
+        <div class="stat">
+          <div class="label">Area (km<sup>2</sup>)</div>
+          <div class="separator"></div>
+          <div class="value"></div>
+        </div>
+      </div>
+
+      <div class="details">
+        <div class="detail">
+          <div class="label">Capital</div>
+          <div class="value"></div>
+        </div>
+        <div class="detail">
+          <div class="label">Subregion</div>
+          <div class="value"></div>
+        </div>
+        <div class="detail">
+          <div class="label">Languages</div>
+          <div class="value"></div>
+        </div>
+        <div class="detail">
+          <div class="label">Currencies</div>
+          <div class="value"></div>
+        </div>
+        <div class="detail">
+          <div class="label">Continents</div>
+          <div class="value"></div>
+        </div>
+      </div>
+
+      <div class="borders">
+        <div class="label">Neighbouring Countries</div>
+        <div class="countries"></div>
+      </div>
+    </div>
+    
+
+  </div>
+
+</body>
+</html>

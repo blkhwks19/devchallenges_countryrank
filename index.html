@@ -1,0 +1,312 @@
+<!doctype html>
+<html>
+<head>
+    <title>Document</title>
+    <style>
+      :root {
+        --xdark:#1B1D1F;
+        --dark:#282B30;
+        --med:#6C727F;
+        --light:#D2D5DA;
+        --blue:#4E80EE;
+      }
+      @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700&display=swap');
+
+      body {
+        margin:0;
+        display: flex;
+        justify-content: center;
+        font-family: 'Be Vietnam Pro', sans-serif;
+        background-color:var(--xdark);
+        background-image:url('./images/hero-image-wr.jpg');
+        background-repeat: no-repeat;
+        background-size: contain;
+        position: relative;
+      }
+      html, body {
+        height:100%;
+      }
+      .logo {
+        position: absolute;
+        top:20%;
+        left:43%;
+        width:220px;
+      }
+
+      .card {
+        background:var(--xdark);
+        border-radius:10px;
+        padding:30px 40px;
+        width:80%;
+        border:1px solid var(--dark);
+        position: absolute;
+        top:40%;
+      }
+
+      header {
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom:30px;
+      }
+      .countryCount {
+        color:var(--med);
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .countrySearch {
+        background: var(--dark);
+        border-radius:10px;
+        display: flex;
+        align-items: center;
+        gap:10px;
+        padding:10px 10px;
+      }
+      .countrySearch input {
+        background:none;
+        color:var(--light);
+        border:none;
+        font-size: 16px;
+        width:300px;
+      }
+      .countrySearch input:focus {
+        outline:0;
+      }
+
+      main {
+        display: flex;
+        gap:40px;
+      }
+
+      .sidebar {
+        width:20%;
+      }
+      .sidebar section {
+        display: flex;
+        flex-direction: column;
+        margin-bottom:50px;
+        gap:10px;
+      }
+      .sidebar section > label {
+        font-size: 12px;
+        color:var(--med);
+        font-weight: 700;
+      }
+      .sidebar select {
+        background: none;
+        border:1px solid var(--dark);
+        border-radius:10px;
+        font-size: 14px;
+        font-weight: 600;
+        color:var(--light);
+        padding:10px 10px;
+        cursor: pointer;
+      }
+      .sidebar .regions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap:10px;
+      }
+      .sidebar .region {
+        font-size: 14px;
+        font-weight: 600;
+        color:var(--med);
+        padding:10px 10px;
+        cursor: pointer;
+      }
+      .sidebar .region.active {
+        border-radius:10px;
+        background:var(--dark);
+        color:var(--light);
+      }
+      .sidebar .memberCB, .sidebar .indCB {
+        cursor: pointer;
+      }
+      .sidebar .memberCB input,
+      .sidebar .indCB input {
+        cursor: pointer;
+      }
+      .sidebar .memberCB input:before,
+      .sidebar .indCB input:before {
+        position: relative;
+        display: block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--med);
+        content: "";
+        background: var(--dark);
+        border-radius:5px;
+      }
+      .sidebar .memberCB input:checked:before,
+      .sidebar .indCB input:checked:before {
+        background:var(--blue);
+        border:2px solid var(--blue);
+        background-image: url('./images/Done_round.svg');
+      }
+      .sidebar .memberCB label, .sidebar .indCB label {
+        font-size: 14px;
+        font-weight: 600;
+        color:var(--light);
+        position: relative;
+        top:5px;
+        left:15px;
+        cursor: pointer;
+      }
+
+      .main {
+        width: 80%;
+      }
+      table {width:100%;}
+      th {
+        font-size: 12px;
+        color:var(--med);
+        font-weight: 700;
+        text-align: left;
+        border-bottom:1px solid var(--dark);
+        padding-bottom:20px;
+      }
+      td {
+        padding-top:15px;
+        font-size: 16px;
+        font-weight: 600;
+        color:var(--light);
+        cursor: pointer;
+      }
+      td:nth-child(1) { width:12%; }
+      td:nth-child(2) { width:25%; }
+      td:nth-child(3) { width:23%; }
+      td:nth-child(4) { width:20%; }
+      td:nth-child(5) { width:20%; }
+      td img {
+        width:50px;
+        height:40px;
+        border-radius:5px;
+      }
+      .flagSkeleton {
+        background:var(--dark);
+        width:50px;
+        height:40px;
+        border-radius:5px;
+      }
+      .textSkeleton {
+        background:var(--dark);
+        width:100px;
+        height:10px;
+        border-radius:5px;
+      }
+    </style>
+    <script>
+      let allCountries = [];
+
+      window.onload = function() {
+        
+        fetch('https://restcountries.com/v3.1/all')
+          .then(response => response.json())
+          .then(data => {
+            allCountries = data.sort((a, b) => parseFloat(b.population) - parseFloat(a.population));
+            
+            var i;
+            for (var i = 0; i < 3; i++) {
+              document.querySelector('tbody').innerHTML += `<a href="country.html?id=${allCountries[i].cca3}">
+                <tr>
+                  <td><img src="${allCountries[i].flags.png}"></td>
+                  <td>${allCountries[i].name.common}</td>
+                  <td>${allCountries[i].population.toLocaleString()}</td>
+                  <td>${allCountries[i].area.toLocaleString()}</td>
+                  <td>${allCountries[i].region}</td>
+                </tr>
+              </a>`;
+            }
+
+            for (var i = 0; i < 8; i++) {
+              document.querySelector('tbody').innerHTML += `<tr>
+                <td><div class="flagSkeleton"></div></td>
+                <td><div class="textSkeleton"></div></td>
+                <td><div class="textSkeleton"></div></td>
+                <td><div class="textSkeleton"></div></td>
+                <td><div class="textSkeleton"></div></td>
+              </tr>`;
+            }
+            
+          })
+          .catch(error => {
+            console.log(error)
+          })
+        ;
+
+      }
+    </script>
+</head>
+<body>
+
+  <img src="./images/Logo.svg" class="logo">
+
+  <div class="card">
+    
+    <header>
+      <div class="countryCount">Found 234 countries</div>
+      <div class="countrySearch">
+        <img src="./images/Search.svg">
+        <input type="text" placeholder="Search by Name, Region, Subregion">
+      </div>
+    </header>
+
+    <main>
+
+      <div class="sidebar">
+        <section>
+          <label for="sort">Sort by</label>
+          <select name="sort">
+            <option value="population">Population</option>
+            <option value="name">Name</option>
+            <option value="area">Area</option>
+          </select>
+        </section>
+        <section>
+          <label for="regions">Region</label>
+          <div class="regions">
+            <div class="region active">Americas</div>
+            <div class="region">Antarctic</div>
+            <div class="region active">Africa</div>
+            <div class="region active">Asia</div>
+            <div class="region active">Europe</div>
+            <div class="region">Oceania</div>
+          </div>
+        </section>
+        <section>
+          <label for="status">Status</label>
+          <div class="memberCB">
+            <input type="checkbox" name="member">
+            <label for="member">Member of the United Nations</label>
+          </div>
+          <div class="indCB">
+            <input type="checkbox" name="ind" checked>
+            <label for="ind">Independent</label>
+          </div>
+        </section>
+      </div>
+
+      <div class="main">
+        <table>
+          <thead>
+            <tr>
+              <th>Flag</th>
+              <th>Name</th>
+              <th>Population</th>
+              <th>Area (km<sup>2</sup>)</th>
+              <th>Region</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
